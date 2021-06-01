@@ -4,25 +4,35 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-@Entity
+//@Entity
 @Getter
 @Setter
-@SequenceGenerator(
-        name = "MEMBER_SEQ_GENERATOR",
-        sequenceName = "MEMBER_SEQ",
-        initialValue = 1, allocationSize = 50
-)
 public class Member {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MEMBER_SEQ_GENERATOR")
+    @Id @GeneratedValue
     private Long id;
 
-    @Column(name = "name")
-    private String username;
+    @Column(name = "USERNAME")
+    private String name;
 
-    public Member() {
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
+
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
+
+    @ManyToMany //쓰지마라! 중간 테이블 자체에 Mapping Column 이외에 추가가 불가능하다.
+    @JoinTable(name = "MEMBER_PRODUCT")
+    private List<Product> products = new ArrayList<>();
+
+    public void changeTeam(Team team) {
+        this.team = team;
+        team.getMemberList().add(this);
     }
 }
