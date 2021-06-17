@@ -20,4 +20,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setMember(this);
+    }
 }
